@@ -189,6 +189,52 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
 country_profile(plastics_clean, country, year, min_audits = 1) 
 ```
 
+### Visualizations
+
+```{r}
+#| label: fig-Vizualization-1
+#| fig-cap: "Lollipop Plot of Average Plastic Waster per Audit for 2019 and 2020 for the 5 Most Populated Countries"
+
+rate_ify <- function(df, numerator, denominator, name = rate){
+  stopifnot(is.data.frame(df))
+  df |>
+    mutate({{name}} := {{numerator}}/{{denominator}})
+}
+
+plastics_clean |> 
+  group_by(country, year) |> 
+  summarise(total_trash = sum(total),
+            num_events = mean(num_events),
+            .groups = "drop") |>
+  rate_ify(numerator = total_trash,
+           denominator = num_events,
+           name = avg_event_impact) |> 
+  mutate(country = str_to_title(country)) |>
+  filter(country %in% c("India",
+                        "China",
+                        "United States Of America",
+                        "Indonesia", 
+                        "Nigeria")) |>
+  mutate(country = fct_reorder(country, avg_event_impact)) |>
+  ggplot(aes(x = avg_event_impact, y = country)) +
+  geom_segment(aes(x = 0, xend = avg_event_impact,
+                   y = country, yend = country),
+               color = "gray60") +
+  geom_point(size = 4, color = "steelblue") +
+  facet_wrap(~ year) +
+  labs(
+    title = "Average Waste Accounted for per Audit",
+    subtitle = "Top 5 Most Populated Countries",
+    x = "Average Waste per Audit",
+    y = NULL
+  ) +
+  geom_text(aes(label = round(avg_event_impact, 1)), 
+          hjust = -0.3, 
+          size = 3) +
+  theme_minimal()
+```
+
+
 # Research Question 2: Economic and Geographic Patterns in Plastic Collection
 
 
@@ -198,7 +244,7 @@ The following visualizations display how plastic waste patterns differ across br
 ### Figure 1. Ridge Plot Showing Plastic Waste Type Distribution by Country GDP per Capita
 
 ```{r}
-#| label: fig-Vizualization-1
+#| label: fig-Vizualization-3
 #| fig-cap: "Ridge Plot Showing the Amount of Plastic Waste for Each Type of Plastic"
 
 final_merged |> 
