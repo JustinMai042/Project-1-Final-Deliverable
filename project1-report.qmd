@@ -45,7 +45,7 @@ Which plastic types are the most abundant in the audits, does this change from c
 
 How do demographic and economic characteristics of countries along with their geographic location relate to differences in plastic collected during cleanup audits?
 
-# Data Summaries and Vizualizations
+# Data Summaries and Visualizations
 
 ```{r}
 #| label: Libraries
@@ -71,8 +71,8 @@ plastics_clean <- plastics |>
   mutate(across(empty:pvc, ~replace_na(., 0)),
          total = rowSums(across(c(empty:pvc))),
          .before = num_events)
-
-final_merged <- read_csv("/Users/avery/Desktop/stat541/project-1/final_table.csv")
+final_merged <- read.csv("final_merged.rds")
+#final_merged <- read_csv("/Users/avery/Desktop/stat541/project-1/final_table.csv")
 ```
 
 ## Data Summaries
