@@ -55,7 +55,7 @@ How do demographic and economic characteristics of countries along with their ge
 
 To address the first research question, we begin by comparing the composition of plastic waste across countries and years. The following tables summarize the proportions and overall audit profiles for the five most populous countries in the dataset. These summaries help identify which plastic categories are most common and whether those patterns appear consistent across countries.
 
-### Table 1. Proportions of Plastics for the 5 Most Populated Countries
+### Table 1. Statistics of Each Plastic Type Across all Audits
 
 ```{r}
 #| label: Libraries
@@ -82,53 +82,52 @@ plastics_clean <- plastics |>
          total = rowSums(across(c(empty:pvc))),
          .before = num_events)
 final_merged <- readRDS("final_merged.rds")
-#final_merged <- read_csv("/Users/avery/Desktop/stat541/project-1/final_table.csv")
 ```
 
 ```{r}
 #| label: tbl-Data-Summary-1
-#| tbl-cap: "Proportions of Each Plastic Type for the 5 Most Populated Countries"
+#| tbl-cap: "Summary of Each Plastic Type Across All Audits"
 
-proportions <- function(df) {
-  
-  df |>
-    select(country:pvc) |>
-    map_if(is.numeric, ~.x / df$grand_total) |>
-    as.data.frame() 
-}
+plastic_cols <- c("hdpe", "ldpe", "o", "pet", "pp", "ps", "pvc")
 
-plastics_clean |>
-    mutate(year = factor(year)) |>
-    group_by(country, year) |>
-    summarize(across(empty:total, 
-                     ~sum(.x, na.rm = TRUE)),
-              .groups = "drop") |>
-  proportions() |>
-  filter(country %in% c("India",
-                        "China",
-                        "United States of America",
-                        "Indonesia",
-                        "Nigeria")) |>
+map(plastic_cols, function(col) {
+  tibble(
+    plastic_type = col,
+    total = sum(plastics[[col]], na.rm = TRUE),
+    mean = mean(plastics[[col]], na.rm = TRUE),
+    median = median(plastics[[col]], na.rm = TRUE),
+    sd = sd(plastics[[col]], na.rm = TRUE),
+    iqr = IQR(plastics[[col]], na.rm = TRUE),
+    min = min(plastics[[col]], na.rm = TRUE),
+    max = max(plastics[[col]], na.rm = TRUE),
+    audits_with_plastic_type = sum(plastics[[col]] > 0, na.rm = TRUE),
+    percent_of_audits = mean(plastics[[col]] > 0, na.rm = TRUE)
+  )
+}) |>
+  list_rbind() |>
   gt() |>
-  fmt_percent(columns = empty:pvc) |>
-  tab_style(style = cell_text(weight = "bold"),
-    locations = cells_column_labels()) |>
-  tab_caption("Percentage of Each Plastic Type Found in Audits From 
-              the 5 Most Populated Countries by Year") |>
-  cols_move_to_end(o) |>
-  cols_label(country = "Country", 
-             year = "Year",
-             empty = "Empty",
-             hdpe = "HDPE",
-             ldpe = "LDPE",
-             o = "Other",
-             pet = "PET",
-             pp = "PP",
-             ps = "PS",
-             pvc = "PVC")  |>
+  fmt_percent(columns = percent_of_audits, decimals = 2) |>
+  fmt_number(columns = mean:sd, decimals = 2) |>
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |>
+  tab_header("Summary statistics for each plastic type across all audits") |>
+  cols_label(
+    plastic_type = "Plastic Type",
+    total = "Total",
+    mean = "Mean",
+    median = "Median",
+    sd = "SD",
+    iqr = "IQR",
+    min = "Min",
+    max = "Max",
+    audits_with_plastic_type = "Audits With Plastic Type",
+    percent_of_audits = "Percent of Audits"
+  ) |>
   data_color(
     method = "numeric",
-    palette = "plasma", 
+    palette = "PuBu", 
     reverse = FALSE
   )
 ```
@@ -189,7 +188,7 @@ country_profile(plastics_clean, country, year, min_audits = 1)
 
 ## Visualizations
 
-### Figure 1. Lollipop Plot of Average Plastic Waster per Audit for 2019 and 2020 for the 5 Most Populated Countries
+### Figure 1. Lollipop Plot of Average Plastic Waste per Audit for 2019 and 2020 for the 5 Most Populated Countries
 ```{r}
 #| label: fig-Vizualization-1
 #| fig-cap: "Lollipop Plot of Average Plastic Waster per Audit for 2019 and 2020 for the 5 Most Populated Countries"
@@ -225,13 +224,43 @@ plastics_clean |>
     title = "Average Waste Accounted for per Audit",
     subtitle = "Top 5 Most Populated Countries",
     x = "Average Waste per Audit",
-    y = NULL
+    y = "",
+    alt = "Lollipop plot of the average waste per audit for 2019 and 2020 for the 5 most populated countries, India, China, USA, Indonesia, and Nigeria."
   ) +
   geom_text(aes(label = round(avg_event_impact, 1)), 
           hjust = -0.3, 
           size = 3) +
   theme_minimal()
 ```
+
+### Figure 2. Bar Graph of the Amount of Each Plastic Type Found in Audits From the 5 Most Populated Countires
+
+```{r}
+#| label: fig-Visualization-2
+#| fig-cap: "Most Abundant Plastic Types by 5 Most Populated Countries"
+plastics_clean |>
+  filter(country %in% c("India", "China", "United States of America",
+                        "Indonesia", "Nigeria")) |>
+  mutate(country = str_to_title(country)) |>
+  pivot_longer(cols = c(hdpe, ldpe, o, pet, pp, ps, pvc),
+               names_to = "plastic_type",
+               values_to = "count") |>
+  group_by(country, plastic_type) |>
+  summarise(total = sum(count, na.rm = TRUE), .groups = "drop") |>
+  mutate(plastic_type = fct_reorder(plastic_type, total)) |>
+  ggplot(aes(x = total, y = plastic_type, fill = plastic_type)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ country, scales = "free_x") +
+  scale_fill_brewer(palette = "Blues") +
+  labs(
+    title = "Most Abundant Plastic Types by 5 Most Populated Countries",
+    x = "Total Count",
+    y = "",
+    alt = "Bar graph of the amount of each plastic type found in audits from the 5 most populated countries, India, China, USA, Indonesia, and Nigeria."
+  ) +
+  theme_dark()
+```
+
 
 # Research Question 2: Economic and Geographic Patterns in Plastic Collection
 
