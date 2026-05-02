@@ -37,16 +37,16 @@ The third dataset was obtained through the Global Footprint Network API by pulli
 
 # Research Questions
 
-## Question 1
+#### Question 1
 
 Which plastic types are the most abundant in the audits, does this change from country to country?
 
-## Question 2
+#### Question 2
 
 How do demographic and economic characteristics of countries along with their geographic characteristics associated with differences in plastic collected during cleanup audits?
 
 
-## Research Question 1: Plastic Composition Across Countries
+# Research Question 1: Plastic Composition Across Countries
 
 
 ## Tables
@@ -82,6 +82,7 @@ plastics_clean <- plastics |>
 final_merged <- readRDS("final_merged.rds")
 #final_merged <- read_csv("/Users/avery/Desktop/stat541/project-1/final_table.csv")
 ```
+
 
 ```{r}
 #| label: tbl-Data-Summary-1
@@ -131,7 +132,7 @@ plastics_clean |>
   )
 ```
 
-
+### Table 2. Proportions of Each Plastic Type for the 5 Most Populated Countries
 ```{r}
 #| label: tbl-Data-Summary-2
 #| tbl-cap: "Summary Statistics of Audits by Country and Year for the 5 Most Populated Countries"
@@ -186,7 +187,7 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
 country_profile(plastics_clean, country, year, min_audits = 1) 
 ```
 
-## Research Question 2: Economic and Geographic Patterns in Plastic Collection
+# Research Question 2: Economic and Geographic Patterns in Plastic Collection
 
 
 ## Visualizations
@@ -288,7 +289,7 @@ final_merged |>
                                 "Oceania" = "royalblue"))
 ```
 
-# Data Model
+# Data Model for Research Question 2
 
 ```{r}
 #| label: Data Model
