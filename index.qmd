@@ -19,7 +19,6 @@ theme:
   dark: slate
 project:
   type: website
-  output-dir: docs
 ---
 
 # The Context of our Data
