@@ -39,6 +39,8 @@ The third dataset was obtained through the Global Footprint Network API by pulli
 
 # Research Questions
 
+Plastic pollution is not only an environmental problem, but also a social and economic one. Different countries consume, regulate, and dispose of plastic in different ways, so cleanup audits can reveal both what kinds of plastics are most common and how broader characteristics of countries may shape pollution patterns. Given this, we wanted to pose two research questions that guide our analysis first.
+
 #### Question 1
 
 Which plastic types are the most abundant in the audits, does this change from country to country?
