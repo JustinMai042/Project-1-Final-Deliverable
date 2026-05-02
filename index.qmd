@@ -289,8 +289,61 @@ final_merged |>
 
 ### Table 2
 ```{r}
-#| label: Table 2 research question 2
-#| tbl-cap: ""
+#| label: Research question 2 table 2
+#| tbl-cap: "Percent of Plastic Types Compared to Largest Indurtry Sectors for the 5 Most Populated Countries"
+
+rate_ify2 <- function(df, numerators, denominator) {
+  stopifnot(is.data.frame(df))
+  
+  df |>
+    mutate(across(.cols = {{ numerators }},
+                  .fns = ~ .x / {{ denominator }},
+                  .names = "{.col}"))
+}
+
+final_merged |> 
+  group_by(country) |> 
+  summarise(hdpe = sum(hdpe),
+            ldpe = sum(ldpe),
+            o = sum(o),
+            pet = sum(pet),
+            pp = sum(pp),
+            ps = sum(ps),
+            pvc = sum(pvc),
+            total_waste = sum(total),
+            industry = mean(employment_industry),
+            service = mean(employment_services),
+            ag = mean(employment_agriculture),
+            .groups = "drop") |>
+  mutate(
+    largest_sector = case_when(
+      industry >= service & industry >= ag ~ "Industry",
+      service >= industry & service >= ag ~ "Service",
+      ag >= industry & ag >= service ~ "Agriculture"),
+    .after = total_waste ) |> 
+  filter(country %in% c("India",
+                        "China",
+                        "United States of America",
+                        "Indonesia", 
+                        "Nigeria")) |>
+  rate_ify2(numerator = hdpe:pvc,
+           denominator = total_waste) |> 
+
+  gt() |> 
+  tab_header(
+    title = "Proportions of Plastic Types Compared to Employment Sectorization",
+    subtitle = "Data from 2019 and 2020 Featuring the 5 Most Populated Countries") |> 
+  fmt_percent(
+    columns = hdpe:pvc,
+    decimals = 2) |> 
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_column_labels()) |>
+  cols_label(country = "Country", 
+             total_waste = "Total Count of Plastics",
+             industry = "Percent of Employment in Industry Sector",
+             service = "Percent of Employment in Service Sector",
+             ag = "Percent of Employment in Agriculture Sector",
+             largest_sector = "Largest Employment Sector")
 ```
 
 
