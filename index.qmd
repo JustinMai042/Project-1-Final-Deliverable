@@ -135,18 +135,13 @@ plastics_clean |>
   )
 ```
 
-### Table 2. Proportions of Each Plastic Type for the 5 Most Populated Countries
+### Summary of Audits for the 10 Countries with the Highest Amount of Plastic Collected
 ```{r}
 #| label: tbl-Data-Summary-2
-#| tbl-cap: "Summary Statistics of Audits by Country and Year for the 5 Most Populated Countries"
+#| tbl-cap: "Summary Statistics of Audits for the 10 Countries with the Highest Amount of Plastic Collected"
 country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
   data |>
-    filter(!is.na(country), country != "EMPTY",
-           country %in% c("India",
-                        "China",
-                        "United States of America",
-                        "Indonesia",
-                        "Nigeria")) |>
+    filter(!is.na(country), country != "EMPTY") |>
     group_by({{ group_var1 }}, {{ group_var2 }}) |>
     summarise(
       audits = n(),
@@ -159,7 +154,10 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
     filter(audits >= min_audits) |>
     arrange({{ group_var1 }}, {{ group_var2 }}) |>
     mutate(country = str_to_title(country)) |>
-    gt() |>
+    arrange(desc(total_pieces)) |>
+    slice_head(n = 10) |>
+    mutate(country = str_remove(country, "_")) |>
+    gt() |> 
     tab_header(
       title = md(
         paste0(
