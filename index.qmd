@@ -49,15 +49,13 @@ Which plastic types are the most abundant in the audits, does this change from c
 
 How do demographic and economic characteristics of countries along with their geographic characteristics associated with differences in plastic collected during cleanup audits?
 
-
 # Research Question 1: Plastic Composition Across Countries
 
-
 ## Tables
+
 To address the first research question, we begin by comparing the composition of plastic waste across countries and years. The following tables summarize the proportions and overall audit profiles for the five most populous countries in the dataset. These summaries help identify which plastic categories are most common and whether those patterns appear consistent across countries.
 
 ### Table 1. Proportions of Plastics for the 5 Most Populated Countries
-
 
 ```{r}
 #| label: Libraries
@@ -86,7 +84,6 @@ plastics_clean <- plastics |>
 final_merged <- readRDS("final_merged.rds")
 #final_merged <- read_csv("/Users/avery/Desktop/stat541/project-1/final_table.csv")
 ```
-
 
 ```{r}
 #| label: tbl-Data-Summary-1
@@ -136,7 +133,8 @@ plastics_clean |>
   )
 ```
 
-### Summary of Audits for the 10 Countries with the Highest Amount of Plastic Collected
+### Table 2. Summary of Audits for the 10 Countries with the Highest Amount of Plastic Collected
+
 ```{r}
 #| label: tbl-Data-Summary-2
 #| tbl-cap: "Summary Statistics of Audits for the 10 Countries with the Highest Amount of Plastic Collected"
@@ -189,8 +187,9 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
 country_profile(plastics_clean, country, year, min_audits = 1) 
 ```
 
-### Visualizations
+## Visualizations
 
+### Figure 1. Lollipop Plot of Average Plastic Waster per Audit for 2019 and 2020 for the 5 Most Populated Countries
 ```{r}
 #| label: fig-Vizualization-1
 #| fig-cap: "Lollipop Plot of Average Plastic Waster per Audit for 2019 and 2020 for the 5 Most Populated Countries"
@@ -234,12 +233,70 @@ plastics_clean |>
   theme_minimal()
 ```
 
-
 # Research Question 2: Economic and Geographic Patterns in Plastic Collection
+
+## Tables
+
+To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution.
+
+### Table 1.
+```{r}
+#| label: Table Reserch Question 2
+#| tbl-cap: "Summary of Plastic Compared to Environmental Indicators for the 5 Most Populated Countries"
+
+final_merged |>
+  group_by(country, year) |>
+  summarise(
+    total_plastic = sum(grand_total),
+    avg_plastic = mean(grand_total),
+    footprint_per_capita = first(EFConsPerCap[!is.na(EFConsPerCap)]),
+    biocapacity_per_capita = first(BiocapPerCap[!is.na(BiocapPerCap)]),
+    hdi = first(HDI[!is.na(HDI)]),
+    population = first(Population[!is.na(Population)]),
+    .groups = "drop"
+  ) |>
+  filter_out(country == "EMPTY") |>
+  filter(country %in% c("India",
+                        "China",
+                        "United States of America",
+                        "Indonesia", 
+                        "Nigeria")) |> 
+  mutate(country = str_to_title(country)) |> 
+  gt() |>
+  tab_header(
+    title = "Country-Year Summary of Plastics and Environmental Data"
+  ) |>
+  cols_label(
+    country = "Country",
+    year = "Year",
+    total_plastic = "Total Plastic Items Collected",
+    avg_plastic = "Average Plastic Items Collected",
+    footprint_per_capita = "Ecological Footprint per Capita",
+    biocapacity_per_capita = "Biocapacity per Capita",
+    hdi = "HDI",
+    population = "Population"
+  ) |>
+  fmt_number(
+    columns = c(total_plastic, avg_plastic, population),
+    decimals = 0
+  ) |>
+  fmt_number(
+    columns = c( footprint_per_capita, biocapacity_per_capita, hdi),
+    decimals = 2
+  )
+```
+
+
+### Table 2
+```{r}
+#| label: Table 2 research question 2
+#| tbl-cap: ""
+```
 
 
 ## Visualizations
-The following visualizations display how plastic waste patterns differ across broader economic and geographic groupings. 
+
+The following visualizations display how plastic waste patterns differ across broader economic and geographic groupings.
 
 ### Figure 1. Ridge Plot Showing Plastic Waste Type Distribution by Country GDP per Capita
 
