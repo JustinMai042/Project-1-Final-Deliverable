@@ -45,7 +45,15 @@ Which plastic types are the most abundant in the audits, does this change from c
 
 How do demographic and economic characteristics of countries along with their geographic characteristics associated with differences in plastic collected during cleanup audits?
 
-# Data Summaries and Visualizations
+
+## Research Question 1: Plastic Composition Across Countries
+
+
+## Tables
+To address the first research question, we begin by comparing the composition of plastic waste across countries and years. The following tables summarize the proportions and overall audit profiles for the five most populous countries in the dataset. These summaries help identify which plastic categories are most common and whether those patterns appear consistent across countries.
+
+### Table 1. Proportions of Plastics for the 5 Most Populated Countries
+
 
 ```{r}
 #| label: Libraries
@@ -74,10 +82,6 @@ plastics_clean <- plastics |>
 final_merged <- readRDS("final_merged.rds")
 #final_merged <- read_csv("/Users/avery/Desktop/stat541/project-1/final_table.csv")
 ```
-
-## Data Summaries
-
-### Proportions of Plastics for the 5 Most Populated Countries
 
 ```{r}
 #| label: tbl-Data-Summary-1
@@ -127,7 +131,6 @@ plastics_clean |>
   )
 ```
 
-### 
 
 ```{r}
 #| label: tbl-Data-Summary-2
@@ -183,9 +186,13 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
 country_profile(plastics_clean, country, year, min_audits = 1) 
 ```
 
-## Visualizations
+## Research Question 2: Economic and Geographic Patterns in Plastic Collection
 
-### Ridge Plot Showing Plastic Waste Type Distribution by Country GDP per Capita
+
+## Visualizations
+The following visualizations display how plastic waste patterns differ across broader economic and geographic groupings. 
+
+### Figure 1. Ridge Plot Showing Plastic Waste Type Distribution by Country GDP per Capita
 
 ```{r}
 #| label: fig-Vizualization-1
@@ -237,7 +244,7 @@ final_merged |>
 
 ```
 
-### Bubble Plot
+### Figure 2. Bubble Plot of Plastic Pollution From Audits Against GDP for 2019 and 2020
 
 ```{r}
 #| label: fig-Vizualization-2
@@ -444,4 +451,4 @@ A linear regression model was fit to examine how demographic, economic, and regi
 
 ## Conclusion
 
-This report examined two questions about plastic pollution using cleanup audit data and additional country datasets. First, the analysis showed that plastic composition varies across countries, although several categories such as PET, PP, and LDPE appear repeatedly among the most common forms of collected waste. Second, the analysis found that differences in plastic collected across countries are more closely associated with regional context and population density than with GDP alone. Taken together, these results suggest that plastic pollution is shaped by both the composition of consumer waste and the demographic and geographic setting in which that waste is collected.
+We examined two questions about plastic pollution using cleanup audit data and additional country datasets. First, the analysis showed that plastic composition varies across countries, although several categories such as PET, PP, and LDPE appear repeatedly among the most common forms of collected waste. Second, the analysis found that differences in plastic collected across countries are more closely associated with regional context and population density than with GDP alone. Taken together, these results suggest that plastic pollution is shaped by both the composition of consumer waste and the demographic and geographic setting in which that waste is collected.
