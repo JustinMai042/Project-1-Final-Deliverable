@@ -414,13 +414,16 @@ final_merged |>
   ggplot(mapping = aes(x = waste,
                        y = plastic_type,
                        fill = income_group)) +
-  geom_density_ridges(alpha = 0.4) +
-  scale_fill_viridis(discrete=TRUE) +
+  geom_density_ridges(alpha = 0.7) +
+  scale_fill_manual(values = c(
+  "High Income"   = "#58b4f5",
+  "Middle Income" = "#a8d8ea",
+  "Low Income"    = "#56e8c8")) +
   labs(
     title = "Plastic Waste Type Distribution of Countries by GDP per Capita",
-    subtitle = "Divided into <span style='color: #6a546f;'>High Income</span>, 
-      <span style='color: #b5aa5f;'>Middle Income</span>,
-    and <span style='color: #5e8684;'>Low Income</span>",
+    subtitle = "Divided into <span style='color: #58b4f5;'>High Income</span>, 
+      <span style='color: #a8d8ea;'>Middle Income</span>,
+    and <span style='color: #56e8c8;'>Low Income</span>",
     x = "Waste Amount",
     y = "",
     alt = "Density ridge plot showing the density of plastic waste audited
@@ -457,7 +460,7 @@ final_merged |>
             Population = mean(Population, na.rm = T)) |>
   ggplot(aes(x = gdp_trillions, y = total_plastic, size = Population, 
              color = region)) +
-    geom_point(alpha = 0.5) +
+    geom_point(alpha = 0.7) +
     scale_size(range = c(.1, 15), name ="Population") +
   labs(color = "Region",
        x = "GDP (Trillions)", 
@@ -471,9 +474,15 @@ final_merged |>
   scale_color_discrete(na.translate = FALSE) +
   scale_x_sqrt() +
   facet_wrap(~ year) +
-  theme_light() + scale_color_manual(values = c("Africa" = "mediumspringgreen", "Americas" = "orchid4", 
-                                "Asia" = "darkorange", "Europe" = "deeppink", 
-                                "Oceania" = "royalblue"))
+  theme_light() + 
+  scale_color_manual(values = c(
+  "Africa"   = "#E69F00", 
+  "Americas" = "#56B4E9",
+  "Asia"     = "#009E73", 
+  "Europe"   = "#F0E442", 
+  "Oceania"  = "#0072B2"
+))
+
 ```
 
 # Data Model for Research Question 2
