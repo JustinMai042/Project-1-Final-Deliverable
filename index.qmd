@@ -235,6 +235,65 @@ plastics_clean |>
 
 # Research Question 2: Economic and Geographic Patterns in Plastic Collection
 
+## Tables
+
+To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution.
+
+### Table 1.
+```{r}
+#| label: Table Reserch Question 2
+#| tbl-cap: "Summary of Plastic Compared to Environmental Indicators for the 5 Most Populated Countries"
+
+final_merged |>
+  group_by(country, year) |>
+  summarise(
+    total_plastic = sum(grand_total),
+    avg_plastic = mean(grand_total),
+    footprint_per_capita = first(EFConsPerCap[!is.na(EFConsPerCap)]),
+    biocapacity_per_capita = first(BiocapPerCap[!is.na(BiocapPerCap)]),
+    hdi = first(HDI[!is.na(HDI)]),
+    population = first(Population[!is.na(Population)]),
+    .groups = "drop"
+  ) |>
+  filter_out(country == "EMPTY") |>
+  filter(country %in% c("India",
+                        "China",
+                        "United States of America",
+                        "Indonesia", 
+                        "Nigeria")) |> 
+  mutate(country = str_to_title(country)) |> 
+  gt() |>
+  tab_header(
+    title = "Country-Year Summary of Plastics and Environmental Data"
+  ) |>
+  cols_label(
+    country = "Country",
+    year = "Year",
+    total_plastic = "Total Plastic Items Collected",
+    avg_plastic = "Average Plastic Items Collected",
+    footprint_per_capita = "Ecological Footprint per Capita",
+    biocapacity_per_capita = "Biocapacity per Capita",
+    hdi = "HDI",
+    population = "Population"
+  ) |>
+  fmt_number(
+    columns = c(total_plastic, avg_plastic, population),
+    decimals = 0
+  ) |>
+  fmt_number(
+    columns = c( footprint_per_capita, biocapacity_per_capita, hdi),
+    decimals = 2
+  )
+```
+
+
+### Table 2
+```{r}
+#| label: Table 2 research question 2
+#| tbl-cap: ""
+```
+
+
 ## Visualizations
 
 The following visualizations display how plastic waste patterns differ across broader economic and geographic groupings.
