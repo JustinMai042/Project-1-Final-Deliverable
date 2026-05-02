@@ -17,6 +17,9 @@ toc-location: right
 theme: 
   light: cerulean
   dark: slate
+project:
+  type: website
+  output-dir: docs
 ---
 
 # The Context of our Data
