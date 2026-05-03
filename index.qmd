@@ -280,7 +280,6 @@ These bar charts show the total count of each plastic type collected across all 
 To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution. 
 
 ### Table 1. Summary of Plastics Compared to Environmental Metrics
-We looked at the the amount of plastic audited compared to some environmental indicators obtained from an API. The goal here was visually noticing if scores like Bio capacity per capita and a country's hdi affected the amount of plastic waste audited.
 ```{r}
 #| label: Table Reserch Question 2
 #| tbl-cap: "Summary of Plastic Compared to Environmental Indicators for the 5 Most Populated Countries"
@@ -389,12 +388,8 @@ final_merged |>
              palette = "PuBu"
              )
 ```
-<<<<<<< HEAD
-We also looked at the proportion of specific plastic types compared to the makeup of the employment sectors for these countries. This allowed us to see if economic patterns like main employment sectors are tied to the type and amount of plastic produced. We can notice that the other plastic category is the largest for the majority in this sample. Other is not a miss classification, it is a legitimate plastic waste category, it represents bio plastics and mixed plastics. It is possible that many countries have this as the largest category as many consumer products consist of multiple types of plastics.
-=======
 
 This table shows that plastic composition varies across countries, with “other” plastics dominating in China and India, while PET is the largest category in Nigeria and PP is most prominent in the United States. Countries with service based economies are shown to have higher proportions of packaging related plastics such as PET and PP, while India, with a larger agricultural impact, shows a higher share of LDPE. The overall patterns are mixed, suggesting that employment may influence plastic composition.
->>>>>>> 67163e5b9399b599dca48fad628ecb6f13572f61
 
 ## Visualizations
 
