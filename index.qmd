@@ -281,7 +281,7 @@ To address the following question we began by familiarizing ourselves with indic
 
 ### Table 1. Summary of Plastics Compared to Environmental Metrics
 ```{r}
-#| label: Table Reserch Question 2
+#| label: tbl-Table Reserch Question 2
 #| tbl-cap: "Summary of Plastic Compared to Environmental Indicators for the 5 Most Populated Countries"
 
 final_merged |>
@@ -330,7 +330,7 @@ This table shows that countries with larger populations do not always have highe
 
 ### Table 2. Summary of Plastic Waste Type Proportions Compared to Employment Sectorization
 ```{r}
-#| label: Research question 2 table 2
+#| label: tbl-Research question 2 table 2
 #| tbl-cap: "Percent of Plastic Types Compared to Largest Indurtry Sectors for the 5 Most Populated Countries"
 
 rate_ify2 <- function(df, numerators, denominator) {
