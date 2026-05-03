@@ -284,8 +284,8 @@ We looked at the the amount of plastic audited compared to some environmental in
 final_merged |>
   group_by(country, year) |>
   summarise(
-    total_plastic = sum(grand_total),
-    avg_plastic = mean(grand_total),
+    total_plastic = sum(total),
+    avg_plastic = mean(total),
     footprint_per_capita = first(EFConsPerCap[!is.na(EFConsPerCap)]),
     biocapacity_per_capita = first(BiocapPerCap[!is.na(BiocapPerCap)]),
     hdi = first(HDI[!is.na(HDI)]),
