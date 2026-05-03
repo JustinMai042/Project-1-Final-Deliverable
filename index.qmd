@@ -132,7 +132,7 @@ map(plastic_cols, function(col) {
   )
 ```
 
-This table shows that the “other” plastic category is the most dominant, with the highest total and appearing in nearly half of all audits. PET and LDPE are also common, while PVC and PS appear much less frequently. The zero medians and large standard deviations indicate that most audits contain little to no plastic of a given type, but a few audits contain very large amounts.
+This table shows that the “other” plastic category is the most dominant, with the highest total and appearing in nearly half of all audits. PET and LDPE are also common, while PVC and PS appear much less frequently. The zero medians and large standard deviations indicate that most audits contain little to no plastic of a given type, but a few audits contain very large amounts of plastic.
 
 ### Table 2. Summary of Audits for the 5 Most Populated Countries
 
