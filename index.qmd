@@ -325,7 +325,6 @@ final_merged |>
 
 
 ### Table 2. Summary of Plastic Waste Type Proportions Compared to Employment Sectorization
-We also looked at the proportion of specific plastic types compared to the makeup of the employment sectors for these countries. This allowed us to see if economic patterns like main employment sectors are tied to the type and amount of plastic produced.
 ```{r}
 #| label: Research question 2 table 2
 #| tbl-cap: "Percent of Plastic Types Compared to Largest Indurtry Sectors for the 5 Most Populated Countries"
@@ -370,7 +369,8 @@ final_merged |>
     decimals = 2) |> 
   tab_style(style = cell_text(weight = "bold"),
             locations = cells_column_labels()) |>
-  cols_label(country = "Country", 
+  cols_label(country = "Country",
+             o = "Other",
              total_waste = "Total Count of Plastics",
              industry = "Percent of Employment in Industry Sector",
              service = "Percent of Employment in Service Sector",
@@ -384,7 +384,7 @@ final_merged |>
              palette = "PuBu"
              )
 ```
-
+We also looked at the proportion of specific plastic types compared to the makeup of the employment sectors for these countries. This allowed us to see if economic patterns like main employment sectors are tied to the type and amount of plastic produced. We can notice that the other plastic category is the largest for the majority in this sample. Other is not a miss classification, it is a legitimate plastic waste category, it represents bio plastics and mixed plastics. It is possible that many countries have this as the largest category as many consumer products consist of multiple types of plastics.
 
 ## Visualizations
 
