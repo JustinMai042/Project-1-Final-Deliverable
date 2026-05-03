@@ -132,6 +132,8 @@ map(plastic_cols, function(col) {
   )
 ```
 
+This table shows that the “other” plastic category is the most dominant, with the highest total and appearing in nearly half of all audits. PET and LDPE are also common, while PVC and PS appear much less frequently. The zero medians and large standard deviations indicate that most audits contain little to no plastic of a given type, but a few audits contain very large amounts.
+
 ### Table 2. Summary of Audits for the 5 Most Populated Countries
 
 ```{r}
@@ -185,6 +187,8 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
 
 country_profile(plastics_clean, country, year, min_audits = 1)
 ```
+
+This table shows clear differences across countries, with Nigeria having much higher total and average plastic collected per audit than others. Indonesia and India also show relatively high averages, while China and the United States have lower values despite many audits. The large gap between medians and means suggests that a small number of large cleanup events drive most of the totals.
 
 ## Visualizations
 
@@ -323,6 +327,7 @@ final_merged |>
   )
 ```
 
+This table shows that countries with larger populations do not always have higher plastic totals, as Indonesia and Nigeria report much higher average plastic collected per audit than China and the United States. The United States has the highest ecological footprint and HDI but relatively moderate plastic counts, while countries with lower footprint and HDI, such as Nigeria, show much higher averages. This suggests that environmental and development indicators alone do not directly explain differences in plastic collected.
 
 ### Table 2. Summary of Plastic Waste Type Proportions Compared to Employment Sectorization
 ```{r}
@@ -384,7 +389,12 @@ final_merged |>
              palette = "PuBu"
              )
 ```
+<<<<<<< HEAD
 We also looked at the proportion of specific plastic types compared to the makeup of the employment sectors for these countries. This allowed us to see if economic patterns like main employment sectors are tied to the type and amount of plastic produced. We can notice that the other plastic category is the largest for the majority in this sample. Other is not a miss classification, it is a legitimate plastic waste category, it represents bio plastics and mixed plastics. It is possible that many countries have this as the largest category as many consumer products consist of multiple types of plastics.
+=======
+
+This table shows that plastic composition varies across countries, with “other” plastics dominating in China and India, while PET is the largest category in Nigeria and PP is most prominent in the United States. Countries with service based economies are shown to have higher proportions of packaging related plastics such as PET and PP, while India, with a larger agricultural impact, shows a higher share of LDPE. The overall patterns are mixed, suggesting that employment may influence plastic composition.
+>>>>>>> 67163e5b9399b599dca48fad628ecb6f13572f61
 
 ## Visualizations
 
