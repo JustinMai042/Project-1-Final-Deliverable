@@ -132,29 +132,29 @@ map(plastic_cols, function(col) {
   )
 ```
 
-### Table 2. Summary of Audits for the 10 Countries with the Highest Amount of Plastic Collected
+### Table 2. Summary of Audits for the 5 Most Populated Countries
 
 ```{r}
 #| label: tbl-Data-Summary-2
 #| tbl-cap: "Summary Statistics of Audits for the 10 Countries with the Highest Amount of Plastic Collected"
+
 country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
   data |>
     filter(!is.na(country), country != "EMPTY") |>
     group_by({{ group_var1 }}, {{ group_var2 }}) |>
     summarise(
       audits = n(),
-      total_pieces = sum(grand_total),
-      median_pieces = median(grand_total),
-      mean_pieces = mean(grand_total),
-      max_pieces = max(grand_total),
+      total_pieces = sum(grand_total, na.rm = TRUE),
+      median_pieces = median(grand_total, na.rm = TRUE),
+      mean_pieces = mean(grand_total, na.rm = TRUE),
+      max_pieces = max(grand_total, na.rm = TRUE),
       .groups = "drop"
     ) |>
     filter(audits >= min_audits) |>
     arrange({{ group_var1 }}, {{ group_var2 }}) |>
     mutate(country = str_to_title(country)) |>
-    arrange(desc(total_pieces)) |>
-    slice_head(n = 10) |>
-    mutate(country = str_remove(country, "_")) |>
+    filter(country %in% c("India", "China", "United States Of America",
+                        "Indonesia", "Nigeria")) |>
     gt() |> 
     tab_header(
       title = md(
@@ -183,7 +183,7 @@ country_profile <- function(data, group_var1, group_var2, min_audits = 10) {
 }
 
 
-country_profile(plastics_clean, country, year, min_audits = 1) 
+country_profile(plastics_clean, country, year, min_audits = 1)
 ```
 
 ## Visualizations
