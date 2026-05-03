@@ -267,9 +267,10 @@ plastics_clean |>
 
 ## Tables
 
-To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution. We looked at the the amount of plastic audited compared to some environmental indicators obtained from an API. We also looked at the proportion of specific plastic types compared to the makeup of the employment sectors for these countries. This allowed us to see if economic patterns like main employment sectors are tied to the type and amount of plastic produced. 
+To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution. 
 
 ### Table 1. Summary of Plastics Compared to Environmental Metrics
+We looked at the the amount of plastic audited compared to some environmental indicators obtained from an API. The goal here was visually noticing if scores like Bio capacity per capita and a country's hdi affected the amount of plastic waste audited.
 ```{r}
 #| label: Table Reserch Question 2
 #| tbl-cap: "Summary of Plastic Compared to Environmental Indicators for the 5 Most Populated Countries"
@@ -318,6 +319,7 @@ final_merged |>
 
 
 ### Table 2. Summary of Plastic Waste Type Proportions Compared to Employment Sectorization
+We also looked at the proportion of specific plastic types compared to the makeup of the employment sectors for these countries. This allowed us to see if economic patterns like main employment sectors are tied to the type and amount of plastic produced.
 ```{r}
 #| label: Research question 2 table 2
 #| tbl-cap: "Percent of Plastic Types Compared to Largest Indurtry Sectors for the 5 Most Populated Countries"
@@ -345,12 +347,6 @@ final_merged |>
             service = mean(employment_services),
             ag = mean(employment_agriculture),
             .groups = "drop") |>
-  mutate(
-    largest_sector = case_when(
-      industry >= service & industry >= ag ~ "Industry",
-      service >= industry & service >= ag ~ "Service",
-      ag >= industry & ag >= service ~ "Agriculture"),
-    .after = total_waste ) |> 
   filter(country %in% c("India",
                         "China",
                         "United States of America",
@@ -372,8 +368,15 @@ final_merged |>
              total_waste = "Total Count of Plastics",
              industry = "Percent of Employment in Industry Sector",
              service = "Percent of Employment in Service Sector",
-             ag = "Percent of Employment in Agriculture Sector",
-             largest_sector = "Largest Employment Sector")
+             ag = "Percent of Employment in Agriculture Sector") |> 
+  data_color(columns = hdpe:pvc,
+             direction = "row",
+             palette = "PuBu"
+             ) |> 
+  data_color(columns = industry: ag,
+             direction = "row",
+             palette = "PuBu"
+             )
 ```
 
 
