@@ -192,7 +192,7 @@ country_profile(plastics_clean, country, year, min_audits = 1)
 ```{r}
 #| label: fig-Vizualization-1
 #| fig-cap: "Lollipop Plot of Average Plastic Waster per Audit for 2019 and 2020 for the 5 Most Populated Countries"
-
+#| fig-alt: "Lollipop plot comparing average waste per audit for India, China, the United States, Indonesia, and Nigeria in 2019 and 2020. Each country appears on the y-axis, average waste per audit appears on the x-axis, and separate panels compare the two years."
 rate_ify <- function(df, numerator, denominator, name = rate){
   stopifnot(is.data.frame(df))
   df |>
@@ -238,6 +238,7 @@ plastics_clean |>
 ```{r}
 #| label: fig-Visualization-2
 #| fig-cap: "Most Abundant Plastic Types by 5 Most Populated Countries"
+#| fig-alt: "Bar charts showing the total count of each plastic type collected in audits for India, China, the United States, Indonesia, and Nigeria. Each panel represents one country, and bars compare plastic types such as HDPE, LDPE, PET, PP, PS, PVC, and other plastics."
 plastics_clean |>
   filter(country %in% c("India", "China", "United States of America",
                         "Indonesia", "Nigeria")) |>
@@ -385,7 +386,7 @@ The following visualizations display how plastic waste patterns differ across br
 ```{r}
 #| label: fig-Vizualization-3
 #| fig-cap: "Ridge Plot Showing the Amount of Plastic Waste for Each Type of Plastic"
-
+#| fig-alt: "Density ridge plot showing distributions of audited plastic waste amounts by plastic type for 2019. Ridges are grouped by plastic type, and color indicates GDP per capita income group: low income, middle income, or high income."
 final_merged |> 
   filter(year == 2019) |> 
   group_by(country) |> 
@@ -440,6 +441,7 @@ final_merged |>
 ```{r}
 #| label: fig-Vizualization-2
 #| fig-cap: "Bubble Plot of Plastic Pollution From Audits Against GDP for 2019 and 2020"
+#| fig-alt: "Bubble plot comparing plastic collected per cleanup event with GDP for countries in 2019 and 2020. Each point represents a country-year, the x-axis shows GDP in trillions, the y-axis shows total plastic per cleanup event, point size represents population, color represents region, and panels separate the two years."
 #| warning: false
 
 final_merged |>
