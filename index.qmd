@@ -21,9 +21,9 @@ project:
   type: website
 ---
 
-# The Context of our Data
+# Plastic Is Everywhere
 
-## Original Data Set
+## How This Plastic Was Counted
 
 This was a data frame with information on plastic pollution. It was originally collected by the Break Free From Plastic (BFFP) group. They are an environmental activist with an interest in reducing the amount of plastic waste in the world. They focus on reducing the use of single use plastics and other actions across the entire life cycle of plastics. They believe that the best way to address plastic pollution comes from prevention over treating the effects of pollution. The data is two years (2019 and 2020) worth of data collected through global audits that BFFP does trying to understand the sources of plastic waste creation. The information provided by the data set is the country, parent company which created the plastic waste, the number of clean up events and volunteers, and the counts of plastic waste. This was unit-less so we are assuming individual plastic pieces collected at the event. There was a grand total count and multiple columns representing the different types of plastics ranging from the thin material of bags to PVC pipe plastic. Each row represents a country and company combination. There are over 10,000 rows of data.
 
@@ -32,15 +32,15 @@ This data was originally found in multiple folders one each for the years 2019 a
 We also did some minor cleaning to the dataset. To address the NA values present in our data our group decided to turn any NA within the plastic type columns into a zero. The rationale being that when being filled out if there were no counts of a certain type some would input a 0 and others would leave the cell empty on a spreadsheet. To address NAs in the grand totals we summed the counts of the different type of plastics and found only two discrepancies.
 
 
-## Country Statistics Data Set
+## The Economic Context Behind Each Country
 
 The second dataset was obtained through a country statistics API and provide demographic and economic indicators for the countries represented in the plastics data. In this dataset, the observational unit is the country. Variables retrieved from the API include measures such as GDP, population, population density, employment by sector, and other indicators. The documentation for the API does not clearly identify the exact reference year for every variable, so this analysis uses variables that are relatively stable across the 2019–2020 period. Data like this is collected by global organizations like the United Nations, the World's Bank, the International Monetary Fund, and organizations like such. This data serves as numeric indicators to the state of countries. APIs like API Ninja do a good job by collecting all of this data in a single place and The data is import allowing easy access to it. This data is important to us because it provides demographic and economic context for understanding country differences in plastic collected during cleanup audits. We added it to the dataset we are working with.
 
-## Country Environmental Data Set
+## The Environmental Context Behind Each Country
 
 The third dataset was obtained through the Global Footprint Network API by pulling country level data for 2019 and 2020 from the National Footprint and Biocapacity Accounts. The API returns environmental and development indicators for countries and territories, including metrics such as Total Biocapacity and Total Ecological Footprint. After retrieving the data, I combined the yearly responses, reshaped them into a country year format, and matched them to the plastics dataset using country and year. This allowed me to incorporate environmental context into the original dataset and compare plastic collection outcomes with a nations ecological state.
 
-# Research Questions
+# What Are We Trying to Explain?
 
 Plastic pollution is not only an environmental problem, but also a social and economic one. Different countries consume, regulate, and dispose of plastic in different ways, so cleanup audits can reveal both what kinds of plastics are most common and how broader characteristics of countries may shape pollution patterns. Given this, we wanted to pose two research questions that guide our analysis first.
 
@@ -54,9 +54,9 @@ How do demographic and economic characteristics of countries along with their ge
 
 # Research Question 1: Plastic Composition Across Countries
 
-## Statistical Summaries of Plastic Types and Total Counts
+## Most Plastic Falls Into Just a Few Categories
 
-To address the first research question, we begin by comparing the composition of plastic waste across countries and years. The following tables summarize the proportions and overall audit profiles for the five most populous countries in the dataset. These summaries help identify which plastic categories are most common and whether those patterns appear consistent across countries. Knowing how the different types of plastic play a role in the data is important because not all plastics are the same. Some are not recycable and each type of plastic have different uses. 
+To address the first research question, we begin by comparing the composition of plastic waste across countries and years. The following tables summarize the proportions and overall audit profiles for the five most populous countries in the dataset. These summaries help identify which plastic categories are most common and whether those patterns appear consistent across countries. Knowing how the different types of plastic play a role in the data is important because not all plastics are the same. Some are not recycable and each type of plastic have different uses.
 
 ### Table 1. Statistics of Each Plastic Type Across all Audits
 
@@ -200,6 +200,7 @@ This table shows clear differences across countries, with Nigeria having much hi
 ## Visualizing Auditing Events and Plastic Types Recorded
 
 ### Figure 1. Average Plastic Waste per Audit Event
+
 BFFP Auditing events are dependent on volunteer work. Our data set comes from 2019 and 2020. 2020 is notorious for being the height of the Covid-19 pandemic, an event that affected the entire world. Overall, the impact of auditing events in a country depend on many factors and visualizing that difference is important to our understanding of the data.
 
 ```{r}
@@ -249,7 +250,9 @@ plastics_clean |>
 The lollipop plot above shows the average number of plastic pieces collected per audit event. Indonesia stands out with a substantially higher per-event count in both years, while China and Nigeria show comparatively low values, suggesting either fewer pieces per event or different audit scopes. Notably, 2020 shows lower counts across nearly all countries compared to 2019, which may partly reflect disruptions to cleanup operations and volunteer availability during the COVID-19 pandemic, rather than an actual reduction in plastic pollution.
 
 ### Figure 2. Plastic Type Composition by Country
+
 Another thing that may vary from country to country would be the makeup of the plastic waste that they generate.
+
 ```{r}
 #| label: fig-Visualization-2
 #| fig-cap: "Most Abundant Plastic Types by 5 Most Populated Countries"
@@ -279,15 +282,18 @@ plastics_clean |>
 
 These bar charts show the total count of each plastic type collected across all audits for each of the five countries. The "o" category representing other or unclassified plastics tends to have the highest counts, followed by PET and LDPE. The composition shifts across countries — Nigeria shows a notably higher proportion of PET relative to other types, while Indonesia's totals are driven more heavily by the other category. These differences suggest that plastic waste composition does vary meaningfully from country to country, which may reflect differences in consumer behavior, manufacturing practices, and plastic regulation. For example, countries with stricter recycling laws may show lower proportions of certain plastic types while countries with more lenient recycling laws may see broader mix of unclassified waste.
 
-
 # Research Question 2: Economic and Geographic Patterns in Plastic Collection
+
+## Economic Factors Don’t Tell the Whole Story
+
 A country's economic state and environmental state can play a role in their attitude towards the environment. Metrics like their ecological footprint and biocapacity can be used as measures of their ecological impact. This impact can vary depending on the amount of pollution a country produces, of which plastic is a type. Economic indicators like GDP, HDI, and employment sectors may also show a relationship with plastic waste generation. This can be shown more in the amount of plastic produced and how it is used. Some industry sectors may use more plastic than others, or more commodities may lead to more plastic waste.
 
-## Comparing Plastic Waste Generation to Environmenal and Economic Indicators
+## Comparing Plastic Waste Generation to Environmental and Economic Indicators
 
-To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution. 
+To address the following question we began by familiarizing ourselves with indicators, both environmental and economic. Both tables look at the 5 most populated countries for consistency through our report and because we wish to see how the largest countries deal with the issue of plastic pollution.
 
 ### Table 1. Summary of Plastics Compared to Environmental Metrics
+
 ```{r}
 #| label: tbl-Table Reserch Question 2
 #| tbl-cap: "Summary of Plastic Compared to Environmental Indicators for the 5 Most Populated Countries"
@@ -337,7 +343,9 @@ final_merged |>
 This table shows that countries with larger populations do not always have higher plastic totals, as Indonesia and Nigeria report much higher average plastic collected per audit than China and the United States. The United States has the highest ecological footprint and HDI but relatively moderate plastic counts, while countries with lower footprint and HDI, such as Nigeria, show much higher averages. This suggests that environmental and development indicators alone do not directly explain differences in plastic collected.
 
 ### Table 2. Summary of Plastic Waste Type Proportions Compared to Employment Sectorization
+
 Different Industries may use plastic in different ways and therefore different types of plastics.
+
 ```{r}
 #| label: tbl-Research question 2 table 2
 #| tbl-cap: "Percent of Plastic Types Compared to Largest Indurtry Sectors for the 5 Most Populated Countries"
@@ -405,7 +413,9 @@ This table shows that plastic composition varies across countries, with “other
 The following visualizations display how plastic waste patterns differ across broader economic and geographic groupings.
 
 ### Figure 1. Plastic Waste Distribution by Income Group
+
 We were curious to explore whether GDP per capita, a figure often used to measure development and quality of life, would play a role in how much of each type of plastic was generated. The initial rationale behind this was that maybe some types of plastics are easier to produce or cheaper to work with. Being able to see any relationships in this context is important to understandign how economic factor affect the genertion of plastic waste.
+
 ```{r}
 #| label: fig-Vizualization-3
 #| fig-cap: "Ridge Plot Showing the Amount of Plastic Waste for Each Type of Plastic"
@@ -462,7 +472,9 @@ final_merged |>
 The ridge plot shows how plastic waste amounts are distributed across income groups for each plastic type in 2019. Countries are grouped into low, middle, and high income based on GDP per capita thresholds. High income countries tend to have narrower distributions concentrated near zero, while middle income countries show wider spread, suggesting more variability in the scale of plastic collected per audit among that group. Similarly, low income countries show distributions close to lower waste amounts. This may reflect smaller audit events rather than less plastic pollution, as these countries may have less volunteer capacity to conduct large scale cleanups.
 
 ### Figure 2. Plastic Collected per Event vs. GDP by Region
+
 Region is another factor that may play a role in plastic waste generation.
+
 ```{r}
 #| label: fig-Vizualization-2
 #| fig-cap: "Bubble Plot of Plastic Pollution From Audits Against GDP for 2019 and 2020"
@@ -514,7 +526,7 @@ final_merged |>
 
 The bubble plot places countries along a GDP axis (scaled to reduce the skew) with plastic collected per cleanup event on the y-axis. Each bubble is sized by population and colored by region. The plot reveals that high GDP countries do not consistently collect more plastic per event, and that regional grouping appears to explain more variation than GDP alone. This pattern is consistent with the regression findings below.
 
-# Data Model for Research Question 2
+# Modeling What Predicts Plastic Collection
 
 ```{r}
 #| label: Data Model
@@ -678,8 +690,6 @@ A linear regression model was fit to examine how demographic, economic, and regi
 ## Conclusion
 
 We examined two questions about plastic pollution using cleanup audit data and additional country datasets. First, the analysis showed that plastic composition varies across countries, although several categories such as PET, PP, and LDPE appear repeatedly among the most common forms of collected waste. Second, the analysis found that differences in plastic collected across countries are more closely associated with regional context and population density than with GDP alone. Taken together, these results suggest that plastic pollution is shaped by both the composition of consumer waste and the demographic and geographic setting in which that waste is collected.
-
-
 
 #### Sources
 
