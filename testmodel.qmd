@@ -76,19 +76,25 @@ isSingular(fit_country_only)
 isSingular(fit_region_nested)
 
 summary(fit_country_only)
+summary(fit_region_nested)
 ```
 
 ```{r}
+#keep region as fixed and add random effect of country
+
 fit_final_maybe <- lmer(
   log_total_plastic ~
     log_population +
     log_pop_density +
     log_gdp_billions +
     year +
+    region +
     (1 | country),
   data = model_df,
   REML = TRUE
 )
 
-summary(fit_final_maybe)
+anova(fit_final_maybe)
+
+#results show that region is not significant, the only significant predictor is population
 ```
