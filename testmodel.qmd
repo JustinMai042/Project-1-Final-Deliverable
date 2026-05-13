@@ -1,0 +1,94 @@
+---
+title: "newmodel"
+format: html
+editor: visual
+---
+
+## 
+
+```{r}
+library(dplyr)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+library(gt)
+library(performance)
+
+# A year random effect was not used because there are only two years.
+# Region and nested region country models were tested, but they did not
+# improve fit compared with the country only random intercept model.
+# The predictors were on very different scales, which caused R warnings.
+# Total plastic, population, population density, and GDP were log transformed
+# to improve models stability.
+final_merged <- readRDS("final_merged.rds")
+
+first_nonmissing <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) NA else x[1]
+}
+
+model_df <- final_merged |>
+  group_by(country, year) |>
+  summarise(
+    total_plastic = sum(total, na.rm = TRUE),
+    Population_millions = first_nonmissing(Population) / 1000000,
+    pop_density = first_nonmissing(pop_density),
+    gdp_billions = first_nonmissing(gdp) / 1000000000,
+    region = first_nonmissing(region),
+    .groups = "drop"
+  ) |>
+  mutate(
+    country = factor(country),
+    year = factor(year),
+    region = factor(region),
+    log_total_plastic = log(total_plastic),
+    log_population = log(Population_millions),
+    log_pop_density = log(pop_density),
+    log_gdp_billions = log(gdp_billions)
+  ) 
+
+fit_country_only <- lmer(
+  log_total_plastic ~
+    log_population +
+    log_pop_density +
+    log_gdp_billions +
+    year +
+    (1 | country),
+  data = model_df,
+  REML = FALSE
+)
+
+fit_region_nested <- lmer(
+  log_total_plastic ~
+    log_population +
+    log_pop_density +
+    log_gdp_billions +
+    year +
+    (1 | region/country),
+  data = model_df,
+  REML = FALSE
+)
+
+anova(fit_country_only, fit_region_nested)
+AIC(fit_country_only, fit_region_nested)
+
+isSingular(fit_country_only)
+isSingular(fit_region_nested)
+
+summary(fit_country_only)
+```
+
+```{r}
+fit_final_maybe <- lmer(
+  log_total_plastic ~
+    log_population +
+    log_pop_density +
+    log_gdp_billions +
+    year +
+    (1 | country),
+  data = model_df,
+  REML = TRUE
+)
+
+summary(fit_final_maybe)
+```
