@@ -17,7 +17,7 @@ library(performance)
 # A year random effect was not used because there are only two years
 # Region and nested region country models were tested, but they didnt
 # improve fit compared with the country only rmodel
-# The predictors were on very different scales, which caused R warnings.
+# The predictors were on very different scales, which caused R warning
 # Total plastic, population, population density, and GDP were log transformed
 # to fix this
 final_merged <- readRDS("final_merged.rds")
