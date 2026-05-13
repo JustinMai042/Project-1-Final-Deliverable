@@ -14,12 +14,12 @@ library(broom.mixed)
 library(gt)
 library(performance)
 
-# A year random effect was not used because there are only two years.
-# Region and nested region country models were tested, but they did not
-# improve fit compared with the country only random intercept model.
+# A year random effect was not used because there are only two years
+# Region and nested region country models were tested, but they didnt
+# improve fit compared with the country only rmodel
 # The predictors were on very different scales, which caused R warnings.
 # Total plastic, population, population density, and GDP were log transformed
-# to improve models stability.
+# to fix this
 final_merged <- readRDS("final_merged.rds")
 
 first_nonmissing <- function(x) {
