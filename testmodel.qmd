@@ -98,3 +98,73 @@ anova(fit_final_maybe)
 
 #results show that region is not significant, the only significant predictor is population
 ```
+
+```{r}
+library(broom.mixed)
+library(dplyr)
+library(gt)
+
+tbl_final <- tidy(
+  fit_final_maybe,
+  effects = "fixed",
+  conf.int = TRUE
+) |>
+  mutate(
+    Predictor = dplyr::recode(
+      term,
+      `(Intercept)` = "Intercept",
+      `log_population` = "Log Population",
+      `log_pop_density` = "Log Population Density",
+      `log_gdp_billions` = "Log GDP (billions)",
+      `year2021` = "Year: 2021",
+      .default = term
+    ),
+    Predictor = sub("^region", "Region: ", Predictor)
+  ) |>
+  select(
+    Predictor,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `t value` = statistic,
+    `p value` = p.value,
+    `95% CI Lower` = conf.low,
+    `95% CI Upper` = conf.high
+  )
+
+tbl_final |>
+  gt() |>
+  tab_header(
+    title = md("**Final Linear Mixed Model Predicting Logged Plastic Collected**"),
+    subtitle = "Response: log(total_plastic); random intercept for country"
+  ) |>
+  cols_label(
+    Predictor = md("**Predictor**"),
+    Estimate = md("**Estimate**"),
+    `Std. Error` = md("**Std. Error**"),
+    `t value` = md("**t value**"),
+    `p value` = md("**p value**"),
+    `95% CI Lower` = md("**95% CI Lower**"),
+    `95% CI Upper` = md("**95% CI Upper**")
+  ) |>
+  fmt_number(
+    columns = c(
+      Estimate,
+      `Std. Error`,
+      `t value`,
+      `95% CI Lower`,
+      `95% CI Upper`
+    ),
+    decimals = 4
+  ) |>
+  fmt_number(
+    columns = `p value`,
+    decimals = 3
+  ) |>
+  tab_source_note(
+    source_note = md(
+      "Model includes region as a fixed effect and country as a random intercept. The response variable, population, population density, and GDP were log transformed."
+    )
+  )
+```
+
+A linear mixed effects model was fit to examine how demographic, economic, time, and regional factors relate to differences in plastic collected across countries and years. The response variable was log transformed total plastic collected. Population, population density, GDP, year, and region were included as fixed effects, while country was included as a random intercept to account for repeated observations within countries. The results show that log population was the only statistically significant predictor in the model, b = 0.928, SE = 0.408, t = 2.272, p = 0.028, 95% CI \[0.106, 1.750\]. This indicates that countries with larger populations tended to have higher levels of plastic collected, holding the other predictors constant. Log population density, log GDP, year, and the overall effect of region were not statistically significant. Central America was the reference region for the regional fixed effects. Therefore, each regional coefficient represents the estimated difference in logged plastic collected between that region and Central America, holding the other predictors constant. Although some individual regional coefficients, such as South-Eastern Asia, had p-values below 0.05, the Type III ANOVA showed that region as a whole was not statistically significant, F(16, 37.798) = 1.174, p = 0.331. So the final mixed model suggests that log population, rather than GDP, population density, year, or region, was the main predictor of logged plastic collected after accounting for country level differences.
