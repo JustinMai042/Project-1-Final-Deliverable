@@ -532,85 +532,30 @@ The bubble plot places countries along a GDP axis (scaled to reduce the skew) wi
 #| label: Data Model
 #| include: false
 
+
+first_nonmissing <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) NA else x[1]
+}
 model_df <- final_merged |>
   group_by(country, year) |>
   summarise(
     total_plastic = sum(total, na.rm = TRUE),
-    Population = first(na.omit(Population)),
-    pop_density = first(na.omit(pop_density)),
-    employment_industry = first(na.omit(employment_industry)),
-    HDI = first(na.omit(HDI)),
-    gdp = first(na.omit(gdp)),
-    imports = first(na.omit(imports)),
-    infant_mortality = first(na.omit(infant_mortality)),
-    region = first(na.omit(region)),
+    Population_millions = first_nonmissing(Population) / 1000000,
+    pop_density = first_nonmissing(pop_density),
+    gdp_billions = first_nonmissing(gdp) / 1000000000,
+    region = first_nonmissing(region),
     .groups = "drop"
   ) |>
   mutate(
-    region = as.factor(region),
-    log_total_plastic = log(total_plastic)
+    country = factor(country),
+    year = factor(year),
+    region = factor(region),
+    log_total_plastic = log(total_plastic),
+    log_population = log(Population_millions),
+    log_pop_density = log(pop_density),
+    log_gdp_billions = log(gdp_billions)
   ) 
-
-fit_1 <- lm(
-  log_total_plastic ~ Population + pop_density + region,
-  model_df
-)
-
-fit_2 <- lm(
-  log_total_plastic ~ Population + pop_density + employment_industry + region,
-  model_df
-)
-
-fit_3 <- lm(
-  log_total_plastic ~ Population + pop_density + HDI + region,
-  model_df
-)
-
-fit_4 <- lm(
-  log_total_plastic ~ Population + pop_density + imports + region,
-  model_df
-)
-
-fit_5 <- lm(
-  log_total_plastic ~ Population + pop_density + infant_mortality + region,
-  model_df
-)
-
-
-fit_6 <- lm(
-  log_total_plastic ~ Population + pop_density + region + gdp,
-  model_df
-)
-
-fit_7 <- lm(
-  log_total_plastic ~ Population + pop_density + region + gdp + imports,
-  model_df
-)
-
-adj_rsq <- list(
-  summary(fit_1)$adj.r.squared,
-  summary(fit_2)$adj.r.squared,
-  summary(fit_3)$adj.r.squared,
-  summary(fit_4)$adj.r.squared,
-  summary(fit_5)$adj.r.squared,
-  summary(fit_6)$adj.r.squared,
-  summary(fit_7)$adj.r.squared
-)
-
-adj_rsq
-
-
-vif_results <- list(
-  vif(fit_1),
-  vif(fit_2),
-  vif(fit_3),
-  vif(fit_4),
-  vif(fit_5),
-  vif(fit_6),
-  vif(fit_7)
-)
-
-vif_results
 
 ```
 
@@ -618,33 +563,68 @@ vif_results
 #| label: Data Model Output
 #| warning: false
 
-model_df <- final_merged |>
-  group_by(country, year) |>
-  summarise(
-    total_plastic = sum(total, na.rm = TRUE),
-    Population_millions = first(na.omit(Population)) / 1000000,
-    pop_density = first(na.omit(pop_density)),
-    gdp_billions = first(na.omit(gdp)) / 1000000000,
-    region = first(na.omit(region)),
-    .groups = "drop"
-  ) |>
-  mutate(
-    region = as.factor(region),
-    log_total_plastic = log(total_plastic)
-  ) 
-
-fit_6 <- lm(
-  log_total_plastic ~ Population_millions + pop_density + gdp_billions + region,
-  model_df
+library(tidyverse)
+library(gt)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+fit_final_maybe <- lmer(
+  log_total_plastic ~
+    log_population +
+    log_pop_density +
+    log_gdp_billions +
+    year +
+    region +
+    (1 | country),
+  data = model_df,
+  REML = TRUE
 )
 
-tbl <- tidy(fit_6, conf.int = TRUE) |>
+anova(fit_final_maybe) |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Predictor") |>
   mutate(
-    Predictor = dplyr::recode(term,
+    Predictor = dplyr::recode(
+      Predictor,
+      log_population = "Log Population",
+      log_pop_density = "Log Population Density",
+      log_gdp_billions = "Log GDP (billions)",
+      year = "Year",
+      region = "Region"
+    )
+  ) |>
+  gt() |>
+  tab_header(
+    title = md("**Type III ANOVA for Final Mixed Model**"),
+    subtitle = "Satterthwaite's method"
+  ) |>
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) |>
+  tab_style(
+    style = list(
+      cell_text(weight = "bold")
+    ),
+    locations = cells_body(
+      rows = Predictor == "Log Population"
+    )
+  )
+
+tbl_final <- tidy(
+  fit_final_maybe,
+  effects = "fixed",
+  conf.int = TRUE
+) |>
+  mutate(
+    Predictor = dplyr::recode(
+      term,
       `(Intercept)` = "Intercept",
-      `Population_millions` = "Population (millions)",
-      `pop_density` = "Population Density",
-      `gdp_billions` = "GDP (billions)"
+      `log_population` = "Log Population",
+      `log_pop_density` = "Log Population Density",
+      `log_gdp_billions` = "Log GDP (billions)",
+      `year2020` = "Year: 2020",
+      .default = term
     ),
     Predictor = sub("^region", "Region: ", Predictor)
   ) |>
@@ -658,11 +638,11 @@ tbl <- tidy(fit_6, conf.int = TRUE) |>
     `95% CI Upper` = conf.high
   )
 
-tbl |>
+tbl_final |>
   gt() |>
   tab_header(
-    title = md("**Linear Regression Predicting Logged Plastic Collected by Country, Year**"),
-    subtitle = "Response: log(total_plastic)"
+    title = md("**Final Linear Mixed Model Predicting Logged Plastic Collected**"),
+    subtitle = "Response: log(total_plastic); random intercept for country"
   ) |>
   cols_label(
     Predictor = md("**Predictor**"),
@@ -674,18 +654,36 @@ tbl |>
     `95% CI Upper` = md("**95% CI Upper**")
   ) |>
   fmt_number(
-    columns = c(Estimate, `Std. Error`, `t value`, `95% CI Lower`, `95% CI Upper`),
+    columns = c(
+      Estimate,
+      `Std. Error`,
+      `t value`,
+      `95% CI Lower`,
+      `95% CI Upper`
+    ),
     decimals = 4
   ) |>
-  fmt_number(columns = `p value`, decimals = 3) |>
+  fmt_number(
+    columns = `p value`,
+    decimals = 3
+  ) |>
+  tab_style(
+    style = list(
+      cell_text(weight = "bold")
+    ),
+    locations = cells_body(
+      columns = `p value`,
+      rows = Predictor == "Log Population"
+    )
+  ) |>
   tab_source_note(
     source_note = md(
-       "The response variable was transformed as log(total_plastic) to meet linear regression assumptions"
+      "Model includes region as a fixed effect and country as a random intercept. The response variable, population, population density, and GDP were log transformed."
     )
   )
 ```
 
-A linear regression model was fit to examine how demographic, economic, and regional factors relate to differences in plastic collected during cleanup audits across countries and years. The model included population (in millions), population density, GDP (in billions), and regions as predictors of the log transformed plastic counts. The results show that population density is significantly associated with plastic collected (p = 0.042), indicating that more densely populated countries tend to have lower levels of plastic collected, holding the other factors constant. Regional differences were the strongest predictors, with countries in Western Asia showing significantly lower levels compared to the reference region (p = 0.001). Total population (p = 0.212) and GDP (p = 0.169) were not statistically significant, which suggests that the economic size does not explain variation in plastic collected. The results show that geographic location and population distribution are more important than economic indicators in explaining differences in plastic collected.
+A linear mixed effects model was fit to examine how demographic, economic, time, and regional factors relate to differences in plastic collected across countries and years. The response variable was log transformed total plastic collected. Population, population density, GDP, year, and region were included as fixed effects, while country was included as a random intercept to account for repeated observations within countries. The results show that log population was the only statistically significant predictor in the model, b = 0.928, SE = 0.408, t = 2.272, p = 0.028, with a 95% CI [0.106, 1.750]. This indicates that countries with larger populations tended to have higher levels of plastic collected, holding the other predictors constant. Log population density, log GDP, year, and the overall effect of region were not statistically significant. Central America was the reference region for the regional fixed effects. So, each regional coefficient represents the estimated difference in logged plastic collected between that region and Central America, holding the other predictors constant. Although some individual regional coefficients, such as South-Eastern Asia, had p-values below 0.05, the Type III ANOVA showed that region as a whole was not statistically significant, F(16, 37.798) = 1.174, p = 0.331. So, the final mixed model suggests that log population, rather than GDP, population density, year, or region, was the greatest predictor of logged plastic collected after accounting for country level differences.
 
 ## Conclusion
 
